@@ -1,0 +1,174 @@
+! function($) {
+    "use strict";
+
+    var App = function() {};
+    
+    //PRELOADER
+    App.prototype.initPreloader = function() {
+        $('#status').fadeOut();
+        $('#preloader').delay(350).fadeOut('slow');
+        $('body').delay(350).css({
+            'overflow': 'visible'
+        });
+    },
+
+    //scroll
+    App.prototype.initStickyMenu = function() {
+        $(window).on('scroll',function() {
+            var scroll = $(window).scrollTop();
+
+            if (scroll >= 50) {
+                $(".sticky").addClass("stickyadd");
+            } else {
+                $(".sticky").removeClass("stickyadd");
+            }
+        });
+    },
+
+    //Smooth
+    App.prototype.initSmoothLink = function() {
+        $('.navbar-nav a').on('click', function(event) {
+            var $anchor = $(this);
+            $('html, body').stop().animate({
+                scrollTop: $($anchor.attr('href')).offset().top - 0
+            }, 1500, 'easeInOutExpo');
+            event.preventDefault();
+        });
+    },
+
+    //Scrollspy
+    App.prototype.initScrollspy = function() {
+        $("#navbarCollapse").scrollspy({
+            offset:20
+        });
+    },
+
+    //Typed
+    App.prototype.initTextType = function() {
+        $(".element").each(function() {
+            var $this = $(this);
+            $this.typed({
+                strings: $this.attr('data-elements').split(','),
+                typeSpeed: 100,
+                backDelay: 3000
+            });
+        });
+    },
+
+    //Work
+    App.prototype.initWork = function() {
+        $(window).on('load', function () {
+            var $container = $('.work-filter');
+            var $filter = $('#menu-filter');
+            $container.isotope({
+                filter: '*',
+                layoutMode: 'masonry',
+                animationOptions: {
+                    duration: 750,
+                    easing: 'linear'
+                }
+            });
+
+            $filter.find('a').on("click",function() {
+                var selector = $(this).attr('data-filter');
+                $filter.find('a').removeClass('active');
+                $(this).addClass('active');
+                $container.isotope({
+                    filter: selector,
+                    animationOptions: {
+                        animationDuration: 750,
+                        easing: 'linear',
+                        queue: false,
+                    }
+                });
+                return false;
+            });
+
+            var disable = false;
+
+            $('#contact-form a').on('click', function() {
+                var data = {};
+                if(!disable) {
+                    data['name'] = $('#contact-form #name').val();
+                    data['email'] = $('#contact-form #email').val();
+                    data['subject'] = $('#contact-form #subject').val();
+                    data['message'] = $('#contact-form #comments').val();
+
+                    var url = "http://io.harshaltripathi.me/email/contact";
+
+                    $('#contact-form a').text("");
+                    $('#contact-form a').append('<i class=\"fas fa-spinner\"></i> &nbsp; Sending');
+                    disable = true;
+                    $('#contact-form a').addClass('disabled');
+
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        crossDomain: true,
+                        success: function(data) {
+                            $('#contact-form a').text("SENT");
+                            console.log(data); // show response from the php script.
+                            $('#contact-form').trigger("reset");
+                        },
+                        error: function(data) {
+                            $('#contact-form a').text("Submit");
+                            disable = false;
+                            $('#contact-form a').addClass('disabled');
+                            $('#contact-form a').removeClass('disabled');
+                        }
+                    });
+                }
+            });
+        });
+    },
+
+    //Magnificpop
+    App.prototype.initMagnificPopup = function() {
+        $('.img-zoom').magnificPopup({
+            type: 'image',
+            closeOnContentClick: true,
+            mainClass: 'mfp-fade',
+            gallery: {
+                enabled: true,
+                navigateByImgClick: true,
+                preload: [0, 1]
+            }
+        });
+    },
+
+    //Client
+    App.prototype.initTestimonial = function() {
+        $("#owl-demo").owlCarousel({
+            autoPlay: 7000,
+            stopOnHover: true,
+            navigation: false,
+            paginationSpeed: 1000,
+            goToFirstSpeed: 2000,
+            singleItem: true,
+            autoHeight: true,
+        });
+    },
+
+
+
+    App.prototype.init = function() {
+        this.initStickyMenu();
+        this.initSmoothLink();
+        this.initScrollspy();
+        this.initTextType();
+        this.initWork();
+        this.initMagnificPopup();
+        this.initPreloader();
+        this.initTestimonial();
+    },
+    //init
+    $.App = new App, $.App.Constructor = App
+}(window.jQuery),
+
+//initializing
+function($) {
+    "use strict";
+    $.App.init();
+}(window.jQuery);
