@@ -84,43 +84,6 @@
                 return false;
             });
 
-            var disable = false;
-
-            $('#contact-form a').on('click', function() {
-                var data = {};
-                if(!disable) {
-                    data['name'] = $('#contact-form #name').val();
-                    data['email'] = $('#contact-form #email').val();
-                    data['subject'] = $('#contact-form #subject').val();
-                    data['message'] = $('#contact-form #comments').val();
-
-                    var url = "http://io.harshaltripathi.me/email/contact";
-
-                    $('#contact-form a').text("");
-                    $('#contact-form a').append('<i class=\"fas fa-spinner\"></i> &nbsp; Sending');
-                    disable = true;
-                    $('#contact-form a').addClass('disabled');
-
-                    $.ajax({
-                        type: "POST",
-                        url: url,
-                        data: JSON.stringify(data),
-                        contentType: 'application/json',
-                        crossDomain: true,
-                        success: function(data) {
-                            $('#contact-form a').text("SENT");
-                            console.log(data); // show response from the php script.
-                            $('#contact-form').trigger("reset");
-                        },
-                        error: function(data) {
-                            $('#contact-form a').text("Submit");
-                            disable = false;
-                            $('#contact-form a').addClass('disabled');
-                            $('#contact-form a').removeClass('disabled');
-                        }
-                    });
-                }
-            });
         });
     },
 
